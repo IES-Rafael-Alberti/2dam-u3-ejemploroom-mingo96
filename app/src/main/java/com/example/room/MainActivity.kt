@@ -16,6 +16,7 @@ import com.example.room.addtasks.ui.TasksScreen
 import com.example.room.addtasks.ui.TasksViewModel
 import com.example.room.ui.theme.RoomTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,20 +39,5 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@HiltAndroidApp
 class TasksManageApp : Application()
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RoomTheme {
-        Greeting("Android")
-    }
-}

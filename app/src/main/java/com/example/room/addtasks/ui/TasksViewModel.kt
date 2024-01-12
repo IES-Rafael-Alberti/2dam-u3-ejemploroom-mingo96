@@ -4,11 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltAndroidApp
+@HiltViewModel
 class TasksViewModel @Inject constructor(): ViewModel() {
+
 
     private val _showDialog =MutableLiveData<Boolean>(false)
     val showDialog:LiveData<Boolean> = _showDialog
@@ -16,13 +17,6 @@ class TasksViewModel @Inject constructor(): ViewModel() {
     private val _myTaskDialect = MutableLiveData<String>("")
     val myTaskDialect:LiveData<String> = _myTaskDialect
 
-    fun getShow(): Boolean {
-        return showDialog.value!!
-    }
-
-    fun getText():String{
-        return myTaskDialect.value!!
-    }
 
     fun closeDialog(){
         _showDialog.value = false

@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +29,16 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun TasksScreen(tasksViewModel: TasksViewModel) {
+    val show :Boolean by tasksViewModel.showDialog.observeAsState(false)
+    val text : String by tasksViewModel.myTaskDialect.observeAsState(initial = "")
     Box(Modifier.fillMaxSize()) {
         FabDialog(
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) { tasksViewModel.openDialog() }
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onNewTask ={tasksViewModel.openDialog() }
+        )
         AddTasksDialog(
-            show = tasksViewModel.getShow(),
-            myTaskText = tasksViewModel.getText(),
+            show = show,
+            myTaskText = text,
             onClose = { tasksViewModel.closeDialog() },
             onTaskAdded = { tasksViewModel.taskCreated() },
             onTextChange = {nuevoTexto-> tasksViewModel.changeText(nuevoTexto) }
