@@ -57,13 +57,10 @@ class TasksViewModel @Inject constructor(
         closeDialog()
         //guardo el valor en una constante para que no se borre antes de añadirse, cosa que pasa por ser asincrono
         val tarea = "${_myTaskDialect.value}"
-        viewModelScope.launch (context = Dispatchers.IO){
-            Log.i("yo", _myTaskDialect.value!!)
-            addTaskUseCase(UiTaskModel(task = tarea , selected = _showDialog.value?:false))
-
+        viewModelScope.launch(context = Dispatchers.IO){
+            addTaskUseCase(UiTaskModel(task = tarea , selected = false))
         }
         changeText("")
-
 
 
     }
@@ -82,6 +79,8 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(context = Dispatchers.IO){
             updateTaskUseCase(taskModel)
         }
+
+
     }
 
     fun changeText(newText:String){
