@@ -1,6 +1,7 @@
 package com.example.room.addtasks.ui
 
-import com.example.room.addtasks.data.TaskModel
+import com.example.room.addtasks.ui.model.TaskModel
+
 
 sealed interface TaskUiState {
     object Loading : TaskUiState

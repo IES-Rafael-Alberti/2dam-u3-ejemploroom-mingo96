@@ -2,6 +2,8 @@ package com.example.room.addtasks.data
 
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
@@ -14,19 +16,13 @@ abstract class TasksManageDatabase: RoomDatabase() {
     abstract fun taskDao():TaskDao
 }
 
+@Entity
 data class TaskEntity (
     @PrimaryKey
     val id:Int,
     val task:String,
     var selected:Boolean=false
 )
-
-data class TaskModel(
-    val id:Int = System.currentTimeMillis().hashCode(),
-    val task: String,
-    var selected: Boolean
-)
-
 @Dao
 interface TaskDao{
     @Query("SELECT * FROM TaskEntity")
@@ -34,4 +30,7 @@ interface TaskDao{
 
     @Insert
     suspend fun addTask(item:TaskEntity)
+
+    @Delete
+    suspend fun deleteTask(item: TaskEntity)
 }

@@ -1,7 +1,7 @@
 package com.example.room.addtasks.ui.model
 
-data class TaskModel (
-    val id:Long = System.currentTimeMillis(),
-    val task : String,
-    var selected : Boolean = false
+data class TaskModel(
+    val id: Int = System.currentTimeMillis().toInt(),
+    val task: String,
+    var selected: Boolean = false
 )
