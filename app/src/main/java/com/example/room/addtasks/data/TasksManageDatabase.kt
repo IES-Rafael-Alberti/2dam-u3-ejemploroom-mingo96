@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Database(entities = [TaskEntity::class], version = 1)
@@ -33,4 +34,7 @@ interface TaskDao{
 
     @Delete
     suspend fun deleteTask(item: TaskEntity)
+
+    @Update
+    suspend fun updateTask(item: TaskEntity)
 }

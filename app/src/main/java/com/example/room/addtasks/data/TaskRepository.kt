@@ -1,5 +1,6 @@
 package com.example.room.addtasks.data
 
+import android.util.Log
 import com.example.room.addtasks.ui.model.TaskModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -9,15 +10,23 @@ import javax.inject.Singleton
 @Singleton
 class TaskRepository @Inject constructor(private val taskDao: TaskDao){
 
+    private fun TaskModel.toData(): TaskEntity {
+        return TaskEntity(this.id, this.task,this.selected)
+    }
+
     val tasks: Flow<List<TaskModel>> = taskDao.getTasks().map { items -> items.map { TaskModel(it.id, it.task, it.selected) } }
 
     suspend fun delete(taskModel: TaskModel){
-        taskDao.deleteTask(TaskEntity(taskModel.id, taskModel.task, taskModel.selected))
+        taskDao.deleteTask(taskModel.toData())
     }
 
     suspend fun add(taskModel: TaskModel){
         taskDao.addTask(
-            TaskEntity(taskModel.id, taskModel.task, taskModel.selected)
+            taskModel.toData()
         )
+    }
+
+    suspend fun update(taskModel: TaskModel) {
+        taskDao.updateTask(taskModel.toData())
     }
 }

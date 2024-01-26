@@ -1,6 +1,7 @@
 package com.example.room.addtasks.ui
 
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.room.addtasks.domain.AddTaskUseCase
 import com.example.room.addtasks.domain.GetTasksUseCase
 import com.example.room.addtasks.domain.DeleteTaskUseCase
+import com.example.room.addtasks.domain.UpdateTaskUseCase
 import com.example.room.addtasks.ui.TaskUiState.*
 import com.example.room.addtasks.ui.model.TaskModel as UiTaskModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class TasksViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
-    getTasksUseCase: GetTasksUseCase
+    getTasksUseCase: GetTasksUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase
 ): ViewModel() {
 
 
@@ -52,41 +55,33 @@ class TasksViewModel @Inject constructor(
 
     fun taskCreated(){
         closeDialog()
-        //Log.i("dam2", _myTaskDialect.value?:"")
+        //guardo el valor en una constante para que no se borre antes de añadirse, cosa que pasa por ser asincrono
+        val tarea = "${_myTaskDialect.value}"
         viewModelScope.launch (context = Dispatchers.IO){
-            addTaskUseCase(UiTaskModel(task = _myTaskDialect.value?:"", selected = _showDialog.value?:false))
+            Log.i("yo", _myTaskDialect.value!!)
+            addTaskUseCase(UiTaskModel(task = tarea , selected = _showDialog.value?:false))
+
         }
-        _myTaskDialect.value = ""
+        changeText("")
+
+
+
     }
 
     fun removeItem(taskModel: UiTaskModel){
 
         viewModelScope.launch (context = Dispatchers.IO) {
-            deleteTaskUseCase(UiTaskModel(taskModel.id, taskModel.task, taskModel.selected))
+            deleteTaskUseCase(taskModel)
         }
 
-        //val task = _tasks.find { it.id==taskModel.id }
-        //_tasks.remove(task)
     }
 
     fun onCheckBoxSelected(taskModel: UiTaskModel) {
-        //desarrollar borrar tarea con un caso de uso y lanzarlo como corrutina
-        //val index = _tasks.indexOf(taskModel)
+        taskModel.selected = !taskModel.selected
 
-        //Si se modifica directamente _tasks[index].selected = true no se recompone el item en el LazyColumn
-        //Esto nos ha pasado ya en el proyecto BlackJack... ¿¿os acordáis?? :-(
-        //Y es que la vista no se entera que debe recomponerse, aunque realmente si se ha modificado el valor en el item
-        //Para solucionarlo y que se recomponga sin problemas en la vista, lo hacemos con un let...
-
-        //El método let toma como parámetro el objeto y devuelve el resultado de la expresión lambda
-        //En nuestro caso, el objeto que recibe let es de tipo TaskModel, que está en _tasks[index]
-        //(sería el it de la exprexión lambda)
-        //El método copy realiza una copia del objeto, pero modificando la propiedad selected a lo contrario
-        //El truco está en que no se modifica solo la propiedad selected de tasks[index],
-        //sino que se vuelve a reasignar para que la vista vea que se ha actualizado un item y se recomponga.
-
-        //desarrollar actualizar tarea con un caso de uso y lanzarlo como corrutina
-        //_tasks[index] = _tasks[index].let { it.copy(selected = !it.selected) }
+        viewModelScope.launch(context = Dispatchers.IO){
+            updateTaskUseCase(taskModel)
+        }
     }
 
     fun changeText(newText:String){
